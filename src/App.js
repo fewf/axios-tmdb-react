@@ -1,6 +1,8 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Link, Switch } from "react-router-dom";
 import './App.css';
+import {Badge, Button, Card, Container, Image, ListGroup, Nav, Navbar, Row, Col} from 'react-bootstrap';
+import moment from 'moment';
 
 const PATHS = {
   index: '/',
@@ -16,6 +18,10 @@ function getApiUrl(query) {
     paramKey => `${encodeURIComponent(paramKey)}=${encodeURIComponent(query[paramKey])}`
   ).join('&');
   return `${API_ROOT}${search ? '?' : ''}${search}`;
+}
+
+function formatDate(date) {
+  return moment(date).format('MMMM D, Y');
 }
 
 class App extends React.Component {
@@ -50,68 +56,117 @@ class App extends React.Component {
 
     return (
       <Router>
-        <div className="App">
-          <header className="App-header">
+        <Container>
+          <Navbar bg="light" variant='light' className="App-header">
             <Switch>
               <Route exact path={PATHS.index} component={IndexHeader} />
               <Route path={PATHS.movieDetail} render={({match: {params}}) => <DetailHeader movieTitle={movies.get(Number(params.id)).title} />} />
             </Switch>
-          </header>
-          <div>
-            <Switch>
-              <Route exact path={PATHS.index} render={props => <MovieList movies={movies} />} />
-              <Route path={PATHS.movieDetail} render={({match: {params}}) => <MovieDetail movie={movies.get(Number(params.id))} isFavorite={favorites[params.id]} updateFavorites={this.updateFavorites} />} />
-            </Switch>
-          </div>
-        </div>
+          </Navbar>
+          <Switch>
+            <Route exact path={PATHS.index} render={props => <MovieList movies={movies} />} />
+            <Route path={PATHS.movieDetail} render={({match: {params}}) => <MovieDetail movie={movies.get(Number(params.id))} isFavorite={favorites[params.id]} updateFavorites={this.updateFavorites} />} />
+          </Switch>
+        </Container>
       </Router>
     );
   }
 }
 
 function IndexHeader() {
-  return <h1>Movies</h1>;
+  return <Navbar.Brand>Movies</Navbar.Brand>;
 }
 
 function DetailHeader({movieTitle}) {
-  return <p>
-    <h2>{movieTitle}</h2>
-    <Link to='/'>Close</Link>
-  </p>;
+  return [
+    // dummy span so that justify-content: space-between
+    // will center title and right-align close button
+    <span />,
+    <Navbar.Brand>{movieTitle}</Navbar.Brand>,
+    <Link to={PATHS.index}><Button>Close</Button></Link>
+  ];
 }
 
 function MovieList({movies}) {
-  return [...movies].map(
-    ([id, movie]) => (
-      <div key={id}>
-        {movie.title}
-        {movie.release_date}
-        <img
-          src={`https://image.tmdb.org/t/p/w200/${movie.poster_path}`}
-        />
-        {movie.popularity}
-        <Link to={`/movie/${movie.id}`}>Detail</Link>
-      </div>
-    )
+  return (
+    <ListGroup>
+      {
+        [...movies].map(
+          ([id, movie]) => (
+            <ListGroup.Item key={id} className='list-group-item-movie'>
+              <Container>
+                <Row>
+                  <h5>{movie.title}</h5>
+                </Row>
+                <Row className='list-group-item-movie-row-info'>
+                  <Col>
+                    <Image
+                      src={`https://image.tmdb.org/t/p/w92/${movie.poster_path}`}
+                      fluid
+                    />
+                  </Col>
+                  <Col>
+                    <div>{formatDate(movie.release_date)}</div>
+                    <Link to={`/movie/${movie.id}`}><Button>Detail</Button></Link>
+                  </Col>
+                  <Col>
+                    <PopularityBadge popularity={Math.round(movie.popularity)} />
+                  </Col>
+                </Row>
+              </Container>
+            </ListGroup.Item>
+          )
+        )
+      }
+    </ListGroup>
   );
 }
 
 function MovieDetail({movie, isFavorite, updateFavorites}) {
   return (
-    <div>
-      {movie.title}
-      {movie.release_date}
-      <img
-        src={`https://image.tmdb.org/t/p/w300/${movie.poster_path}`}
-      />
-      {movie.popularity}
-      <button
-        onClick={e => updateFavorites(movie.id)}>
-        {isFavorite ? 'Unfave' : 'Fave'}
-      </button>
-    </div>
+    <Card className='movie-detail'>
+      <Container>
+        <Row>
+          <Col>
+            <Image
+              src={`https://image.tmdb.org/t/p/w200/${movie.poster_path}`}
+              fluid
+            />
+          </Col>
+          <Col>
+            <Container>
+              <Row noGutters className='row-movie-details-icons'>
+                <Col>
+                  <PopularityBadge popularity={Math.round(movie.popularity)} />
+                </Col>
+                <Col>
+                  <button
+                    className='button-favorite'
+                    onClick={e => updateFavorites(movie.id)}>
+                    {isFavorite ? '★' : '☆'}
+                  </button>
+                </Col>
+              </Row>
+              <Row>
+                <h6>{formatDate(movie.release_date)}</h6>
+              </Row>
+            </Container>
+          </Col>
+        </Row>
+        <Row>
+          {movie.overview}
+        </Row>
+      </Container>
+    </Card>
   );
 }
 
+function PopularityBadge(props) {
+  return (
+    <Badge pill variant='success' className='badge-popularity'>
+      {props.popularity}%
+    </Badge>
+  );
+}
 
 export default App;

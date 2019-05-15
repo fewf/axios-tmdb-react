@@ -1,0 +1,30 @@
+.badge-popularity {
+  padding: 20px 15px;
+}
+
+.button-favorite {
+  background:none;
+  border:none;
+  font-size:3em;
+  color:gold;
+}
+
+.row-movie-details-icons {
+  align-items: center;
+}
+
+.App-header.navbar-expand {
+  justify-content: space-between;
+}
+
+.list-group-item-movie .row {
+  align-items: center;
+}
+
+.list-group-item-movie-row-info {
+  justify-content: space-around;
+}
+
+.movie-detail img {
+  padding: 1em;
+}
