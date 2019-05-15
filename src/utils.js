@@ -1,11 +1,14 @@
 import moment from 'moment';
-import {API_KEY, API_ROOT} from './constants';
+import { API_KEY, API_ROOT } from './constants';
 
 export function getApiUrl(query) {
   query.api_key = API_KEY;
-  const search = Object.keys(query).map(
-    paramKey => `${encodeURIComponent(paramKey)}=${encodeURIComponent(query[paramKey])}`
-  ).join('&');
+  const search = Object.keys(query)
+    .map(
+      paramKey =>
+        `${encodeURIComponent(paramKey)}=${encodeURIComponent(query[paramKey])}`
+    )
+    .join('&');
   return `${API_ROOT}${search ? '?' : ''}${search}`;
 }
 
