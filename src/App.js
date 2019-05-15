@@ -2,27 +2,8 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Link, Switch } from "react-router-dom";
 import './App.css';
 import {Badge, Button, Card, Col, Container, Image, ListGroup, Navbar, OverlayTrigger, Row, Spinner} from 'react-bootstrap';
-import moment from 'moment';
-
-const PATHS = {
-  index: '/',
-  movieDetail: '/movie/:id'
-};
-
-const API_ROOT = 'https://api.themoviedb.org/3/discover/movie';
-const API_KEY = '1821c6b6049945b0e08619035590d15b';
-
-function getApiUrl(query) {
-  query.api_key = API_KEY;
-  const search = Object.keys(query).map(
-    paramKey => `${encodeURIComponent(paramKey)}=${encodeURIComponent(query[paramKey])}`
-  ).join('&');
-  return `${API_ROOT}${search ? '?' : ''}${search}`;
-}
-
-function formatDate(date) {
-  return moment(date).format('MMMM D, Y');
-}
+import {PATHS} from './constants';
+import {formatDate, getApiUrl} from './utils';
 
 class App extends React.Component {
   constructor(props) {
