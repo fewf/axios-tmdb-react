@@ -7,6 +7,17 @@ const PATHS = {
   movieDetail: '/movie/:id'
 };
 
+const API_ROOT = 'https://api.themoviedb.org/3/discover/movie';
+const API_KEY = '1821c6b6049945b0e08619035590d15b';
+
+function getApiUrl(query) {
+  query.api_key = API_KEY;
+  const search = Object.keys(query).map(
+    paramKey => `${encodeURIComponent(paramKey)}=${encodeURIComponent(query[paramKey])}`
+  ).join('&');
+  return `${API_ROOT}${search ? '?' : ''}${search}`;
+}
+
 class App extends React.Component {
   constructor(props) {
     super(props);
@@ -17,7 +28,7 @@ class App extends React.Component {
     }
   }
   async componentDidMount() {
-    const response = await fetch('https://api.themoviedb.org/3/discover/movie?api_key=1821c6b6049945b0e08619035590d15b&primary_release_year=2016');
+    const response = await fetch(getApiUrl({primary_release_year: 2016}));
     const {results} = await response.json();
     this.setState({
       movies: results.reduce(
