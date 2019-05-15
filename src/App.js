@@ -29,11 +29,14 @@ class App extends React.Component {
     super(props);
     this.state = {
       favorites: {},
-      movies: null,
-      selectedMovie: null
+      movies: null
     }
   }
   async componentDidMount() {
+    this.fetchMovies();
+  }
+
+  fetchMovies = async () => {
     const response = await fetch(getApiUrl({primary_release_year: 2016}));
     const {results} = await response.json();
     this.setState({
