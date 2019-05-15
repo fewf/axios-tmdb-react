@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Link, Switch } from "react-router-dom";
 import './App.css';
-import {Badge, Button, Card, Container, Image, ListGroup, Nav, Navbar, Row, Col} from 'react-bootstrap';
+import {Badge, Button, Card, Col, Container, Image, ListGroup, Navbar, OverlayTrigger, Row, Spinner} from 'react-bootstrap';
 import moment from 'moment';
 
 const PATHS = {
@@ -55,14 +55,20 @@ class App extends React.Component {
 
   render() {
     const {favorites, movies} = this.state;
-    if (!movies) return <div>Loading...</div>;
+    if (!movies) {
+      return (
+        <Spinner animation="border" role="status">
+          <span className="sr-only">Loading...</span>
+        </Spinner>
+      );
+    };
 
     return (
       <Router>
         <Container>
           <Navbar bg="light" variant='light' className="App-header">
             <Switch>
-              <Route exact path={PATHS.index} component={IndexHeader} />
+              <Route exact path={PATHS.index} component={ListHeader} />
               <Route path={PATHS.movieDetail} render={({match: {params}}) => <DetailHeader movieTitle={movies.get(Number(params.id)).title} />} />
             </Switch>
           </Navbar>
@@ -76,8 +82,10 @@ class App extends React.Component {
   }
 }
 
-function IndexHeader() {
-  return <Navbar.Brand>Movies</Navbar.Brand>;
+function ListHeader() {
+  // dummy span so that justify-content: space-between
+  // will center Movies
+  return [<span />, <Navbar.Brand><h5>Movies</h5></Navbar.Brand>, <span />];
 }
 
 function DetailHeader({movieTitle}) {
@@ -99,7 +107,7 @@ function MovieList({movies}) {
             <ListGroup.Item key={id} className='list-group-item-movie'>
               <Container>
                 <Row>
-                  <h5>{movie.title}</h5>
+                  <h6>{movie.title}</h6>
                 </Row>
                 <Row className='list-group-item-movie-row-info'>
                   <Col>
@@ -143,11 +151,23 @@ function MovieDetail({movie, isFavorite, updateFavorites}) {
                   <PopularityBadge popularity={Math.round(movie.popularity)} />
                 </Col>
                 <Col>
-                  <button
-                    className='button-favorite'
-                    onClick={e => updateFavorites(movie.id)}>
-                    {isFavorite ? '★' : '☆'}
-                  </button>
+                  <OverlayTrigger
+                    placement="right-start"
+                    delay={{ show: 250, hide: 400 }}
+                    overlay={
+                      props => (
+                        <div className='overlay' {...props}>
+                          {isFavorite ? 'Remove from Favorites' : 'Add to Favorites'}
+                        </div>
+                      )
+                    }
+                  >
+                    <button
+                      className='button-favorite'
+                      onClick={e => updateFavorites(movie.id)}>
+                      {isFavorite ? '★' : '☆'}
+                    </button>
+                  </OverlayTrigger>
                 </Col>
               </Row>
               <Row>

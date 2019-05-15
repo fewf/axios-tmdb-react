@@ -17,6 +17,10 @@
   justify-content: space-between;
 }
 
+.navbar-brand-list-header {
+  margin: 0 auto;
+}
+
 .list-group-item-movie .row {
   align-items: center;
 }
@@ -27,4 +31,11 @@
 
 .movie-detail img {
   padding: 1em;
+}
+
+.overlay {
+  background-color: rgba(0, 0, 0, 0.85);
+  padding: 2px 10px;
+  color: white;
+  border-radius: 3;
 }
