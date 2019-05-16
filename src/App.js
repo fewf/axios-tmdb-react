@@ -98,25 +98,25 @@ class App extends React.Component {
 function ListHeader() {
   // dummy span so that justify-content: space-between
   // will center Movies
-  return [
-    <span />,
+  return <>
+    <span />
     <Navbar.Brand>
       <h5>Movies</h5>
-    </Navbar.Brand>,
+    </Navbar.Brand>
     <span />
-  ];
+  </>;
 }
 
 function DetailHeader({ movieTitle }) {
-  return [
     // dummy span so that justify-content: space-between
     // will center title and right-align close button
-    <span />,
-    <Navbar.Brand>{movieTitle}</Navbar.Brand>,
+  return <>
+    <span />
+    <Navbar.Brand>{movieTitle}</Navbar.Brand>
     <Link to={PATHS.index}>
       <Button>Close</Button>
     </Link>
-  ];
+  </>;
 }
 
 function MovieList({ movies }) {
