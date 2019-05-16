@@ -174,7 +174,7 @@ function MovieDetail({ movie, isFavorite, updateFavorites }) {
                     placement="right-start"
                     delay={{ show: 250, hide: 400 }}
                     overlay={props => (
-                      <div className="overlay" {...props}>
+                      <div className="overlay" style={props.style} ref={props.ref}>
                         {isFavorite
                           ? 'Remove from Favorites'
                           : 'Add to Favorites'}
